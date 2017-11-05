@@ -21,6 +21,7 @@ Peer.ai Backend
   * Run PostgreSQL
   * Create and Migrate the database
     ```
+    bin/rails db:environment:set RAILS_ENV=development
     bundle exec rails db:drop db:create db:migrate
     ```
   * Run Guard
@@ -239,7 +240,6 @@ Peer.ai Backend
     extend ActsAsTree::TreeView
     acts_as_tree order: 'name'
     ```
-  *
   * Migrate database
     ```
     bundle exec rails db:drop db:create db:migrate
@@ -294,7 +294,6 @@ Peer.ai Backend
     # show subchildren
     root.children.first.children
     ```
-
     * Note: Run the following if existing data previously added to the DB tables
       ```
       user1 = User.all.first

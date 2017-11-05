@@ -46,6 +46,9 @@ GEM
     bcrypt (3.1.11)
     builder (3.2.3)
     byebug (9.1.0)
+    closure_tree (6.6.0)
+      activerecord (>= 4.1.0)
+      with_advisory_lock (>= 3.0.0)
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
     crass (1.0.2)
@@ -181,6 +184,8 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
+    with_advisory_lock (3.2.0)
+      activerecord (>= 3.2)
 
 PLATFORMS
   ruby
@@ -190,6 +195,7 @@ DEPENDENCIES
   acts_as_tree (~> 2.7.0)
   bcrypt (~> 3.1.11)
   byebug
+  closure_tree (~> 6.6.0)
   devise
   factory_bot_rails (~> 4.0)
   guard-rspec
