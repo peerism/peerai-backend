@@ -1,6 +1,7 @@
 class SkillToken < ActiveRecord::Base
-  belongs_to :profile, class_name: 'UserProfile'
-  belongs_to :parent
+  belongs_to :profile, class_name: 'Profile'
+  # belongs_to :parent, optional: true
+  has_and_belongs_to_many :parents
   validates_presence_of :name
 
   extend ActsAsTree::TreeView

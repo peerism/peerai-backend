@@ -256,9 +256,33 @@ Peer.ai Backend
     ```
     bundle exec rails c
 
+    # create user and profile
     user1 = User.create(email: 'a@a.com', password: '12345678', encrypted_password: '12345678')
-    user1.profile = UserProfile.create(user_id: user1.id)
-    token1 = SkillToken.create(name: "eat", weight: 1, user_profile_id: u.profile.id)
+    user1.profile = Profile.create(user_id: user1.id)
+    # create root
+    root = SkillToken.create(name: "root", weight: 1, profile_id: user1.profile.id)
+    # verify that root's parent is nil
+    root.parent
+    # show the Tree View
+    SkillToken.tree_view(:name)
+    # create parent root
+    parent1 = Parent.create(id: 1)
+    # create child1 with root as parent
+    child1 = root.children.create(name: "child1", weight: 1, profile_id: user1.profile.id, parent_id: parent1.id)
+    # create parent of sub-child
+    parent2 = Parent.create(id: child1.id)
+    # create sub-child1 of child1
+    subchild1 = child1.children.create(name: "subchild1", weight: 1, profile_id: user1.profile.id, parent_id: child1.id)
+    # show parents
+    Parent.all
+    # create sub-child2 of child1
+    subchild2 = child1.children.create(name: "subchild2", weight: 1, profile_id: user1.profile.id, parent_id: child1.id)
+    # show the Tree View
+    SkillToken.tree_view(:name)
+    # |_ root
+    #   |_ child1
+    #     |_ subchild1
+    #     |_ subchild2
     ```
   * Note:
     * Error occurs - https://github.com/amerine/acts_as_tree/issues/71

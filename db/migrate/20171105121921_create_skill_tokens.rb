@@ -5,7 +5,7 @@ class CreateSkillTokens < ActiveRecord::Migration[5.1]
       t.decimal :amount
       t.decimal :weight
       t.references :parent, foreign_key: true
-      t.references :user_profile, foreign_key: true
+      t.references :profile, foreign_key: true
 
       t.timestamps
     end
