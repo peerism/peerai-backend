@@ -5,6 +5,5 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   has_one :profile, class_name: 'Profile'
-  # has_many :skill_tokens, :through => :profile
   delegate :skill_tokens, :to => :profile
 end

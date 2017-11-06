@@ -175,6 +175,11 @@ Peer.ai Backend
     ```
     gem 'acts-as-taggable-on', '~> 4.0'`
     ```
+  * Remove the following from the Gemfile to prevent error `NameError: uninitialized constant SkillToken::ActsAsTree`
+    ```
+    # gem 'spring'
+    # gem 'spring-watcher-listen', '~> 2.0.0'
+    ```
   * Install dependency
     ```sh
     bundle install
@@ -189,18 +194,18 @@ Peer.ai Backend
     rails db:migrate
     ```
 
-## Chapter 5 - Setup Act As Tree Gem with UserProfile SkillToken Model<a id="chapter-5"></a>
-  * Add UserProfile model
+## Chapter 5 - Setup Act As Tree Gem with Profile SkillToken Model<a id="chapter-5"></a>
+  * Add Profile model
     ```
-    bundle exec rails g model UserProfile user:references
+    bundle exec rails g model Profile user:references
     ```
   * Add associations to User
     ```
-    has_one :profile, class_name: 'UserProfile'
+    has_one :profile, class_name: 'Profile'
     delegate :skill_tokens, :to => :profile
     ```
     * Reference: https://stackoverflow.com/questions/12606212/rails-3-has-many-through-has-one
-  * Add associations to UserProfile
+  * Add associations to Profile
     ```
     belongs_to :user
     has_many :skill_tokens
@@ -209,17 +214,13 @@ Peer.ai Backend
     ```
     bundle exec rails g model Parent
     ```
-  * Add association to Parent model
+  * Add HABTM association to Parent model
     ```
-    has_many :skill_tokens
+    has_and_belongs_to_many :skill_tokens
     ```
-  * Add SkillToken model
+  * Add SkillToken model with extra attribute `parent` for ActsAsTree
     ```
-    bundle exec rails g model SkillToken name:string amount:decimal weight:decimal user_profile:references
-    ```
-  * Add extra attribute to SkillToken model for ActsAsTree
-    ```
-    t.references :parent, foreign_key: true
+    bundle exec rails g model SkillToken name:string amount:decimal weight:decimal profile:references parent:references
     ```
   * Add ActsAsTree Gem to Gemfile
     ```
@@ -227,12 +228,18 @@ Peer.ai Backend
     ```
   * Add associations to SkillToken
     ```
-    belongs_to :profile, class_name: 'UserProfile'
+    belongs_to :profile, class_name: 'Profile'
     ```
   * Add to SkillToken model
     ```
+    belongs_to :profile, class_name: 'Profile'
+    has_and_belongs_to_many :parents
+    validates_presence_of :name
+
+    extend ActsAsTree::TreeView
     acts_as_tree order: 'name'
     ```
+  *
   * Migrate database
     ```
     bundle exec rails db:drop db:create db:migrate
@@ -251,7 +258,8 @@ Peer.ai Backend
       * Solution
         * Uncomment in Gemfile `gem 'bcrypt', '~> 3.1.11'`
         * Run `gem pristine bcrypt --version 3.1.11`
-        * Run `bundle exec rails s`
+        * Run `bundle exec` as prefix before any `rails` command
+
   * Rails console
     ```
     bundle exec rails c
@@ -287,7 +295,7 @@ Peer.ai Backend
     root.children.first.children
     ```
 
-    * Note: Run the following if previous existing data in tables
+    * Note: Run the following if existing data previously added to the DB tables
       ```
       user1 = User.all.first
       user1.profile = Profile.all.first
@@ -296,4 +304,4 @@ Peer.ai Backend
       root.children.first.children
       ```
   * Note:
-    * Error occurs - https://github.com/amerine/acts_as_tree/issues/71
+    * Error reported and solution - https://github.com/amerine/acts_as_tree/issues/71
