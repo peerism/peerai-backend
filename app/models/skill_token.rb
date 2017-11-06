@@ -3,6 +3,5 @@ class SkillToken < ActiveRecord::Base
   has_and_belongs_to_many :parents
   validates_presence_of :name
 
-  extend ActsAsTree::TreeView
-  acts_as_tree order: 'name'
+  has_closure_tree
 end

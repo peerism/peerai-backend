@@ -25,8 +25,6 @@ gem 'bcrypt', '~> 3.1.11'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 gem 'devise'
-gem 'acts-as-taggable-on', '~> 4.0'
-gem 'acts_as_tree', '~> 2.7.0'
 gem 'closure_tree', '~> 6.6.0'
 
 group :development, :test do

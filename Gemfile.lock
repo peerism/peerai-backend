@@ -38,10 +38,6 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    acts-as-taggable-on (4.0.0)
-      activerecord (>= 4.0)
-    acts_as_tree (2.7.0)
-      activerecord (>= 3.0.0)
     arel (8.0.0)
     bcrypt (3.1.11)
     builder (3.2.3)
@@ -191,8 +187,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  acts-as-taggable-on (~> 4.0)
-  acts_as_tree (~> 2.7.0)
   bcrypt (~> 3.1.11)
   byebug
   closure_tree (~> 6.6.0)

@@ -10,7 +10,8 @@ Peer.ai Backend
   * [Chapter 2 - Setup RSpec Gem and Guard RSpec Gem](#chapter-2)
   * [Chapter 3 - Setup Devise Gem](#chapter-3)
   * [Chapter 4 - Setup Act As Taggable Gem](#chapter-4)
-  * [Chapter 5 - Setup Act As Tree Gem with UserProfile SkillToken Model](#chapter-5)
+  * [Chapter 5 - Setup Act As Tree Gem with Profile SkillToken Model](#chapter-5)
+  * [Chapter 6 - Setup Closure Tree Gem with Profile SkillToken Model](#chapter-6)
 
 ## Chapter 0 - Usage
   * Install Ruby on Rails >5.1.3
@@ -22,7 +23,7 @@ Peer.ai Backend
   * Create and Migrate the database
     ```
     bin/rails db:environment:set RAILS_ENV=development
-    bundle exec rails db:drop db:create db:migrate
+    bundle exec rails db:drop db:create db:migrate db:seed
     ```
   * Run Guard
     ```
@@ -231,7 +232,7 @@ Peer.ai Backend
     ```
     belongs_to :profile, class_name: 'Profile'
     ```
-  * Add to SkillToken model
+  * Add to SkillToken model. Ordered by name. [Customise ordering](https://github.com/ClosureTree/closure_tree#deterministic-ordering)
     ```
     belongs_to :profile, class_name: 'Profile'
     has_and_belongs_to_many :parents
@@ -304,3 +305,43 @@ Peer.ai Backend
       ```
   * Note:
     * Error reported and solution - https://github.com/amerine/acts_as_tree/issues/71
+
+## Chapter 6 - Setup Closure Tree Gem with Profile SkillToken Model<a id="chapter-6"></a>
+  * Remove Conflicts - Delete ActsAsTaggableOn and ActsAsTree Gems since they cause conflicts.
+  * Setup ClosureTree Gem
+    ```
+    https://github.com/ClosureTree/closure_tree#installation
+    gem 'closure_tree', '~> 6.6.0'
+    bundle install
+    bundle exec rails g closure_tree:migration skill_token
+    bin/rails db:environment:set RAILS_ENV=development
+    bundle exec rails db:drop db:create db:migrate db:seed
+
+    bundle exec rails c
+    user1 = User.create(email: 'a@a.com', password: '12345678', encrypted_password: '12345678')
+    user1.profile = Profile.create(user_id: user1.id)
+    grandparent = SkillToken.create(name: 'Grandparent', weight: 1, profile_id: user1.profile.id)
+    # verify the grandparent's parent is nil
+    grandparent.parent
+    # create parent root
+    parent1 = Parent.create(id: 1)
+    # create child parent
+    parent = grandparent.children.create(name: 'Parent', weight: 1, profile_id: user1.profile.id, parent_id: parent1.id)
+    # create parent of parent child
+    parent2 = Parent.create(id: parent.id)
+    # create child1 with root as parent
+    child1 = parent.children.create(name: "child1", weight: 1, profile_id: user1.profile.id, parent_id: parent2.id)
+
+    grandparent.self_and_descendants.collect(&:name)
+    child1.ancestry_path
+
+    parent3 = Parent.create(id: child1.id)
+
+    # TBC
+    child = SkillToken.find_or_create_by_path([
+      {amount: '1', weight: '1', name: '2014', profile_id: user1.profile.id, parent_id: parent3.id},
+      {amount: '1', weight: '1', name: 'August', profile_id: user1.profile.id, parent_id: parent3.id},
+      {amount: '1', weight: '1', name: '5', profile_id: user1.profile.id, parent_id: parent3.id},
+      {amount: '1', weight: '1', name: 'Visit the Getty Center', profile_id: user1.profile.id, parent_id: parent3.id}
+    ])
+    ```
