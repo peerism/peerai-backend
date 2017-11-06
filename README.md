@@ -283,6 +283,17 @@ Peer.ai Backend
     #   |_ child1
     #     |_ subchild1
     #     |_ subchild2
+    # show subchildren
+    root.children.first.children
     ```
+
+    * Note: Run the following if previous existing data in tables
+      ```
+      user1 = User.all.first
+      user1.profile = Profile.all.first
+      root = SkillToken.all.first
+      root.children
+      root.children.first.children
+      ```
   * Note:
     * Error occurs - https://github.com/amerine/acts_as_tree/issues/71
